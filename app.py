@@ -25,7 +25,7 @@ if uploaded_file is not None:#check if file is present
 	st.write(d)
 	peaks1, _ = find_peaks(pulse,distance=d)
 	hr=hear_rate(peaks1,fs)
-	st.header("heart rate is {}".format(int(hr.round())))
+	st.header("heart rate is {}".format(hr.round()))
 
 	fig,ax=plt.subplots(2,1)
 	ax[0].plot(pulse) 
