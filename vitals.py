@@ -21,7 +21,6 @@ def hear_rate(peaklist,fs):
         cnt += 1
     
     bpm = 60000 / np.mean(RR_list) #60000 ms (1 minute) / average R-R interval of signal
-    print ("Average Heart Beat is: %.01f" %bpm) #Round off to 1 decimal and print
     return bpm
     
 img_rows = 36
@@ -44,10 +43,8 @@ def predict_vitals(video_path,model):
     dXsub_len = (dXsub.shape[0] // frame_depth)  * frame_depth
     dXsub = dXsub[:dXsub_len, :, :, :]
 
-    
-
     yptest = model.predict((dXsub[:, :, :, :3], dXsub[:, :, :, -3:]), batch_size=batch_size, verbose=1)
-
+    print(yptest)
     pulse_pred = yptest[0]
     pulse_pred = detrend(np.cumsum(pulse_pred), 100)
     [b_pulse, a_pulse] = butter(2, [0.65 / fs * 2, 2.5 / fs * 2], btype='bandpass')

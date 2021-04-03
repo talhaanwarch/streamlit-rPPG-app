@@ -41,8 +41,7 @@ def preprocess_raw_video(videoFilePath, dim=36):
     width = vidObj.get(cv2.CAP_PROP_FRAME_WIDTH)
     success, img = vidObj.read()
     dims = img.shape
-    print("Orignal Height", height)
-    print("Original width", width)
+ 
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
     #########################################################################
@@ -75,7 +74,6 @@ def preprocess_raw_video(videoFilePath, dim=36):
     for j in range(normalized_len - 1):
         dXsub[j, :, :, :] = (Xsub[j+1, :, :, :] - Xsub[j, :, :, :]) / (Xsub[j+1, :, :, :] + Xsub[j, :, :, :])
     dXsub = dXsub / np.std(dXsub)
-    print(dXsub.shape)
     #########################################################################
     # Normalize raw frames in the apperance branch
     Xsub = Xsub - np.mean(Xsub)
