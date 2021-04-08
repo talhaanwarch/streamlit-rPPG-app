@@ -68,7 +68,6 @@ def preprocess_raw_video(videoFilePath, dim=36):
     # plt.show()
     #########################################################################
     # Normalized Frames in the motion branch
-    print(Xsub.shape)
     normalized_len = len(t) - 1
     dXsub = np.zeros((normalized_len, dim, dim, 3), dtype = np.float32)
     for j in range(normalized_len - 1):
