@@ -21,30 +21,30 @@ if uploaded_file is not None:#check if file is present
 	with st.spinner('Wait for it...'):
 		tfile = tempfile.NamedTemporaryFile(delete=False) 
 		tfile.write(uploaded_file.read())
-		pulse,resp,fs=predict_vitals(tfile.name,model)
+		pulse,resp,fs,sample_img=predict_vitals(tfile.name,model)
 	st.success('Done!')
 
-
-	d=st.slider('Select threshold', min_value=5 , max_value=15 , value=10 , step=2 )
-	st.write(d)
-	peaks1, _ = find_peaks(pulse,distance=d)
-	hrs=[]
+	st.write('frame rate',np.round(fs,3))
+	# d=st.slider('Select threshold', min_value=5 , max_value=15 , value=10 , step=2 )
+	# st.write(d)
+	# peaks1, _ = find_peaks(pulse,distance=d)
+	np.savetxt('pulse.txt',pulse)
+	hr_adaptive=[]
 	for i in range(10,100,5):
 		peaks=find_peaks_adaptive(pulse, window=i)
-		hrs.append(hear_rate(peaks,fs))
-	print(hrs)
-	print('mean',np.mean(hrs),'median',np.median(hrs))
-	hrsm=np.median(hrs)
-	hrss=np.std(hrs)
-	hrs=np.mean(hrs)
+		hr_adaptive.append(hear_rate(peaks,fs))
+	#print(hrs)
+	hrAmed=np.median(hr_adaptive)
+	hrAstd=np.std(hr_adaptive)
+	hrAmean=np.mean(hr_adaptive)
 	
-	hr=hear_rate(peaks1,fs)
-	
-	st.header("heart rate is {}, {}, {}".format(hrs.round(),hrsm.round(),hrss.round()))
+	# hr=hear_rate(peaks1,fs)
+	# print(hr)
+	st.header("heart rate is {}, {}, {}".format(hrAmean.round(),hrAmed.round(),hrAstd.round()))
 
 	fig,ax=plt.subplots(2,1)
 	ax[0].plot(pulse) 
-	ax[0].plot(peaks1, pulse[peaks1],label='threshold',marker= "x")
+	# ax[0].plot(peaks1, pulse[peaks1],label='threshold',marker= "x")
 	ax[0].plot(peaks, pulse[peaks],label='adaptive',marker= "*")
 	ax[0].set_title('Pulse Prediction')
 	ax[0].legend()
@@ -53,3 +53,5 @@ if uploaded_file is not None:#check if file is present
 	ax[1].set_title('Respiration Prediction')
 	fig.tight_layout()
 	st.write(fig)
+
+	st.image(sample_img)

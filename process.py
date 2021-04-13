@@ -16,13 +16,12 @@ def resize_image(img,h_new,w_old,h_old):
     return resized
 
 def non_skin_remove(patches):
-    patches_hsv=[cv2.cvtColor(i,cv2.COLOR_RGB2HSV) for i in patches]
+    patches_hsv=cv2.cvtColor(patches,cv2.COLOR_BGR2HSV)
     lower = np.array([0, 48, 80], dtype = "uint8")
     upper = np.array([20, 255, 255], dtype = "uint8")
-    skinMask = [cv2.inRange(i, lower, upper) for i in patches_hsv]
-    skinindex = [i for i,j in enumerate(skinMask) if j.sum()>5]
-    patches=[patches[i] for i in skinindex]
-    return patches
+    skinMask = cv2.inRange(patches_hsv, lower, upper)
+    if skinMask.sum()>5:
+        return patches
 
 
 def preprocess_raw_video(videoFilePath, dim=36):
@@ -56,19 +55,22 @@ def preprocess_raw_video(videoFilePath, dim=36):
         vidLxL = cv2.resize(roi,(dim,dim))    
         #vidLxL = cv2.resize(img_as_float(img[:, int(width/2)-int(height/2 + 1):int(height/2)+int(width/2), :]), (dim, dim), interpolation = cv2.INTER_AREA)
         vidLxL = cv2.rotate(vidLxL, cv2.ROTATE_90_CLOCKWISE) # rotate 90 degree
+        vidLxL= non_skin_remove(vidLxL)
         vidLxL = cv2.cvtColor(vidLxL, cv2.COLOR_BGR2RGB)
         Xsub[i, :, :, :] = vidLxL/255.0
         success, img = vidObj.read() # read the next one
         i = i + 1
         
     
-    # n=random.randint(0,len(Xsub))
+    n=random.randint(0,len(Xsub))
+    sample_img=Xsub[n]
     # plt.imshow(Xsub[n])
     # plt.title('Sample Preprocessed Frame')
     # plt.show()
     #########################################################################
     # Normalized Frames in the motion branch
     normalized_len = len(t) - 1
+    print('length',len(t),len(Xsub))
     dXsub = np.zeros((normalized_len, dim, dim, 3), dtype = np.float32)
     for j in range(normalized_len - 1):
         dXsub[j, :, :, :] = (Xsub[j+1, :, :, :] - Xsub[j, :, :, :]) / (Xsub[j+1, :, :, :] + Xsub[j, :, :, :])
@@ -80,8 +82,8 @@ def preprocess_raw_video(videoFilePath, dim=36):
     Xsub = Xsub[:totalFrames-1, :, :, :]
     #########################################################################
     # Plot an example of data after preprocess
-    dXsub = np.concatenate((dXsub[0:1700], Xsub[0:1700]), axis = 3);
-    return dXsub,fps
+    dXsub = np.concatenate((dXsub, Xsub), axis = 3);
+    return dXsub,fps,sample_img
 
 def detrend(signal, Lambda):
     """detrend(signal, Lambda) -> filtered_signal
