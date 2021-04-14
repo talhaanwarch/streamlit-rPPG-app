@@ -10,14 +10,9 @@ from scipy.signal import butter
 from model import MTTS_CAN
 from scipy.signal import savgol_filter
 
-from process import preprocess_raw_video,detrend
+from process import preprocess_raw_video,detrend,remove_outliers
 
-def remove_outliers(x):
-    Q1 = np.quantile(x,0.25)
-    Q3 = np.quantile(x,0.75)
-    IQR = Q3 - Q1
-    y=np.where((x < (Q1-1.5*IQR)) | (x > (Q3+1.5*IQR)), np.median(x), x)
-    return y
+
 
 def hear_rate(peaklist,fs):
     RR_list = []
@@ -28,10 +23,9 @@ def hear_rate(peaklist,fs):
         ms_dist = ((RR_interval / fs) * 1000.0) #Convert sample distances to ms distances
         RR_list.append(ms_dist) #Append to list
         cnt += 1
-    median = np.median(RR_list)
     RR_list=np.array(RR_list)
-    #data=np.where((RR_list < 300.0) | (RR_list > 1300.0) , median, RR_list)
-    #RR_list=savgol_filter(RR_list,5,3)
+
+    RR_list=remove_outliers(RR_list)
     bpm = 60000 / np.mean(RR_list) #60000 ms (1 minute) / average R-R interval of signal
     return bpm
     
@@ -59,7 +53,7 @@ def predict_vitals(video_path,model):
     pulse_pred = yptest[0]
     
     pulse_pred = detrend(np.cumsum(pulse_pred), 100)
-    [b_pulse, a_pulse] = butter(1, [0.75 / fs * 2, 2.5 / fs * 2], btype='bandpass')
+    [b_pulse, a_pulse] = butter(3, [0.75 / fs * 2, 2.5 / fs * 2], btype='bandpass')
     pulse_pred = scipy.signal.filtfilt(b_pulse, a_pulse, np.double(pulse_pred))
     resp_pred = yptest[1]
     resp_pred = detrend(np.cumsum(resp_pred), 100)

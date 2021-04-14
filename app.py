@@ -7,8 +7,16 @@ import numpy as np
 from vitals import predict_vitals,hear_rate,load_model
 import heartpy as hp
 from process import remove_outliers
+from PIL import Image
+img=Image.open('logo.png')
 
-st.title('Calculate heart rate from video')
+
+col1, mid, col2 = st.beta_columns([1,1,20])
+with col1:
+    st.image('logo.png', width=60)
+with col2:
+    st.title('Calculate heart rate from video')
+
 
 @st.cache
 def loadmodel():
