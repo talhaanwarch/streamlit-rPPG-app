@@ -17,3 +17,7 @@ run streamlit app in your browser
 from colab_everything import ColabStreamlit
 ColabStreamlit('/content/streamlit-rPPG-app/app.py') 
 ```
+
+
+# Credit 
+https://github.com/talhaanwarch/MTTS-CAN
