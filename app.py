@@ -5,6 +5,8 @@ from scipy.signal import find_peaks
 from pyampd.ampd import find_peaks_adaptive
 import numpy as np
 from vitals import predict_vitals,hear_rate,load_model
+import heartpy as hp
+from process import remove_outliers
 
 st.title('Calculate heart rate from video')
 
@@ -23,29 +25,35 @@ if uploaded_file is not None:#check if file is present
 		tfile.write(uploaded_file.read())
 		pulse,resp,fs,sample_img=predict_vitals(tfile.name,model)
 	st.success('Done!')
-
+	
 	st.write('frame rate',np.round(fs,3))
 	# d=st.slider('Select threshold', min_value=5 , max_value=15 , value=10 , step=2 )
 	# st.write(d)
 	# peaks1, _ = find_peaks(pulse,distance=d)
-	np.savetxt('pulse.txt',pulse)
-	hr_adaptive=[]
-	for i in range(10,100,5):
-		peaks=find_peaks_adaptive(pulse, window=i)
-		hr_adaptive.append(hear_rate(peaks,fs))
+	# hr_adaptive=[]
+	# for i in range(10,100,5):
+	# 	peaks=find_peaks_adaptive(pulse, window=i)
+	# 	hr_adaptive.append(hear_rate(peaks,fs))
 	#print(hrs)
-	hrAmed=np.median(hr_adaptive)
-	hrAstd=np.std(hr_adaptive)
-	hrAmean=np.mean(hr_adaptive)
+	# hrAmed=np.median(hr_adaptive)
+	# hrAstd=np.std(hr_adaptive)
+	# hrAmean=np.mean(hr_adaptive)
 	
 	# hr=hear_rate(peaks1,fs)
 	# print(hr)
-	st.header("heart rate is {}, {}, {}".format(hrAmean.round(),hrAmed.round(),hrAstd.round()))
+	hpy=hp.process_segmentwise(pulse,sample_rate=fs,segment_overlap=0.75,segment_width=10) [1]['bpm']
+	hpy=[x for x in hpy if str(x) != 'nan']
+	hpy=remove_outliers(hpy)
+
+	
+	print(hpy)
+	#st.header("heart rate is {}, {}, {}".format(hrAmean.round(),hrAmed.round(),hrAstd.round()))
+	st.header('heart rate mean is {}, and range is  {} - {}'.format(np.mean(hpy).round(),np.min(hpy).round(),np.max(hpy).round()))
 
 	fig,ax=plt.subplots(2,1)
 	ax[0].plot(pulse) 
 	# ax[0].plot(peaks1, pulse[peaks1],label='threshold',marker= "x")
-	ax[0].plot(peaks, pulse[peaks],label='adaptive',marker= "*")
+	# ax[0].plot(peaks, pulse[peaks],label='adaptive',marker= "*")
 	ax[0].set_title('Pulse Prediction')
 	ax[0].legend()
 

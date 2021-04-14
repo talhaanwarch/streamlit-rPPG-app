@@ -113,3 +113,10 @@ def detrend(signal, Lambda):
     D = spdiags(diags_data, diags_index, (signal_length - 2), signal_length).toarray()
     filtered_signal = np.dot((H - np.linalg.inv(H + (Lambda ** 2) * np.dot(D.T, D))), signal)
     return filtered_signal
+
+def remove_outliers(x):
+    Q1 = np.quantile(x,0.25)
+    Q3 = np.quantile(x,0.75)
+    IQR = Q3 - Q1
+    y=np.where((x < (Q1-1.5*IQR)) | (x > (Q3+1.5*IQR)), np.median(x), x)
+    return y
