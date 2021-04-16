@@ -57,7 +57,7 @@ if uploaded_file is not None:#check if file is present
 	#st.header("heart rate is {}, {}, {}".format(hrAmean.round(),hrAmed.round(),hrAstd.round()))
 	#st.header('heart rate mean is {}, and range is  {} - {}'.format(np.mean(hpy).round(),np.min(hpy).round(),np.max(hpy).round()))
 	print("hear rate is",hpy_single,np.mean(hpy),hrAmean)
-	st.header('heart rate is {}'.format((hpy_single+np.mean(hpy)+hrAmean)//3))
+	st.header('heart rate is {}'.format(hpy_single*0.3+np.mean(hpy)*0.4+hrAmean*0.3))
 	fig,ax=plt.subplots(2,1)
 	ax[0].plot(pulse) 
 	# ax[0].plot(peaks1, pulse[peaks1],label='threshold',marker= "x")
@@ -71,3 +71,29 @@ if uploaded_file is not None:#check if file is present
 	st.write(fig)
 
 	st.image(sample_img)
+
+
+	St.write("Note")
+st.markdown(	"""
+### Note
+1. Camera should be right in front of face and capturing the whole face and shoulder as in image shown below
+2. There should be little to no movement of camera and head
+3. Lightening should be normal, not to much bright nor dark.
+4. It is suggested to face light while creating video
+5. Avoid talking, eating while creating video.
+6. Video should be more than one minute long. 
+7. FPS of camera should not be less than 15 FPS.
+8. Mobile camera should not be of low mega pixels
+""")
+col1, col2, col3 = st.beta_columns([1,6,1])
+
+with col1:
+	st.write("")
+
+with col2:
+	st.image('frame.jpg',caption="ideal video frame",
+	width=200)
+
+with col3:
+	st.write("")
+
