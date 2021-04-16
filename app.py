@@ -38,32 +38,32 @@ if uploaded_file is not None:#check if file is present
 	# d=st.slider('Select threshold', min_value=5 , max_value=15 , value=10 , step=2 )
 	# st.write(d)
 	# peaks1, _ = find_peaks(pulse,distance=d)
-	# hr_adaptive=[]
-	# for i in range(10,100,5):
-	# 	peaks=find_peaks_adaptive(pulse, window=i)
-	# 	hr_adaptive.append(hear_rate(peaks,fs))
-	#print(hrs)
-	# hrAmed=np.median(hr_adaptive)
-	# hrAstd=np.std(hr_adaptive)
-	# hrAmean=np.mean(hr_adaptive)
+	hr_adaptive=[]
+	for i in range(10,100,5):
+		peaks=find_peaks_adaptive(pulse, window=i)
+		hr_adaptive.append(hear_rate(peaks,fs))
+	hr_adaptive=remove_outliers(hr_adaptive)
+	hrAmed=np.median(hr_adaptive)
+	hrAstd=np.std(hr_adaptive)
+	hrAmean=np.mean(hr_adaptive)
 	
 	# hr=hear_rate(peaks1,fs)
 	# print(hr)
-	hpy=hp.process_segmentwise(pulse,sample_rate=fs,segment_overlap=0.75,segment_width=10) [1]['bpm']
+	hpy=hp.process_segmentwise(pulse,sample_rate=fs,segment_overlap=0.75,segment_width=15) [1]['bpm']
 	hpy=[x for x in hpy if str(x) != 'nan']
 	hpy=remove_outliers(hpy)
-
-	
 	print(hpy)
-	#st.header("heart rate is {}, {}, {}".format(hrAmean.round(),hrAmed.round(),hrAstd.round()))
-	st.header('heart rate mean is {}, and range is  {} - {}'.format(np.mean(hpy).round(),np.min(hpy).round(),np.max(hpy).round()))
 
+	hpy_single=hp.process(pulse,sample_rate=fs,) [1]['bpm']
+	#st.header("heart rate is {}, {}, {}".format(hrAmean.round(),hrAmed.round(),hrAstd.round()))
+	#st.header('heart rate mean is {}, and range is  {} - {}'.format(np.mean(hpy).round(),np.min(hpy).round(),np.max(hpy).round()))
+	st.header('heart rate is {}'.format((hpy_single+np.mean(hpy)+hrAmean)//3))
 	fig,ax=plt.subplots(2,1)
 	ax[0].plot(pulse) 
 	# ax[0].plot(peaks1, pulse[peaks1],label='threshold',marker= "x")
 	# ax[0].plot(peaks, pulse[peaks],label='adaptive',marker= "*")
 	ax[0].set_title('Pulse Prediction')
-	ax[0].legend()
+	# ax[0].legend()
 
 	ax[1].plot(resp)
 	ax[1].set_title('Respiration Prediction')
