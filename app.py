@@ -52,11 +52,11 @@ if uploaded_file is not None:#check if file is present
 	hpy=hp.process_segmentwise(pulse,sample_rate=fs,segment_overlap=0.75,segment_width=15) [1]['bpm']
 	hpy=[x for x in hpy if str(x) != 'nan']
 	hpy=remove_outliers(hpy)
-	print(hpy)
 
 	hpy_single=hp.process(pulse,sample_rate=fs,) [1]['bpm']
 	#st.header("heart rate is {}, {}, {}".format(hrAmean.round(),hrAmed.round(),hrAstd.round()))
 	#st.header('heart rate mean is {}, and range is  {} - {}'.format(np.mean(hpy).round(),np.min(hpy).round(),np.max(hpy).round()))
+	print(,hpy_single,np.mean(hpy),hrAmean)
 	st.header('heart rate is {}'.format((hpy_single+np.mean(hpy)+hrAmean)//3))
 	fig,ax=plt.subplots(2,1)
 	ax[0].plot(pulse) 
