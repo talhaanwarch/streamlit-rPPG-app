@@ -97,3 +97,43 @@ with col2:
 with col3:
 	st.write("")
 
+st.header("Factor effecting heart rate calculation")
+st.write('Effect of camera on heart rate calculation')
+col1, col2, col3 = st.beta_columns([1,6,1])
+with col1:
+	st.write("")
+with col2:
+	st.image('camera_effect.png',caption="",
+	width=500)
+with col3:
+	st.write("")
+
+st.write('Effect of light on heart rate calculation')
+col1, col2, col3 = st.beta_columns([1,6,1])
+with col1:
+	st.write("")
+with col2:
+	st.image('light_effect.png',caption="",
+	width=500)
+with col3:
+	st.write("")
+
+st.write('Effect of facial expression on heart rate calculation')
+col1, col2, col3 = st.beta_columns([1,6,1])
+with col1:
+	st.write("")
+with col2:
+	st.image('facial_expression.png',caption="",
+	width=500)
+with col3:
+	st.write("")
+
+st.write('Effect of talking on heart rate calculation')
+col1, col2, col3 = st.beta_columns([1,6,1])
+with col1:
+	st.write("")
+with col2:
+	st.image('talking_effect.png',caption="",
+	width=500)
+with col3:
+	st.write("")
