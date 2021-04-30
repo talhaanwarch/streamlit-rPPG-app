@@ -120,3 +120,18 @@ def remove_outliers(x):
     IQR = Q3 - Q1
     y=np.where((x < (Q1-1.5*IQR)) | (x > (Q3+1.5*IQR)), np.median(x), x)
     return y
+
+from scipy import signal
+def fourier_analysis(array,fps):
+
+    def remove_outliers(arr, thr):
+        return next(f[0] for f in enumerate(arr) if f[1] > thr)
+    MinFreq = 50   # bpm
+    MaxFreq = 120  # bpm
+    freqs, psd = signal.periodogram(array, fs=fps, window=None, \
+                                    detrend='constant', return_onesided=True, \
+                                        scaling='density')
+    min_idx = remove_outliers(freqs, MinFreq/60.0) - 1
+    max_idx = remove_outliers(freqs, MaxFreq/60.0) + 1
+    hr_estimated = freqs[ min_idx + np.argmax(psd[min_idx : max_idx]) ]
+    return hr_estimated

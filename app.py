@@ -6,7 +6,7 @@ from pyampd.ampd import find_peaks_adaptive
 import numpy as np
 from vitals import predict_vitals,hear_rate,load_model
 import heartpy as hp
-from process import remove_outliers
+from process import remove_outliers,fourier_analysis
 from PIL import Image
 img=Image.open('logo.png')
 
@@ -33,7 +33,7 @@ if uploaded_file is not None:#check if file is present
 		tfile.write(uploaded_file.read())
 		pulse,resp,fs,sample_img=predict_vitals(tfile.name,model)
 	st.success('Done!')
-	
+	np.savetxt('pulse.txt',pulse)
 	st.write('frame rate',np.round(fs,3))
 	# d=st.slider('Select threshold', min_value=5 , max_value=15 , value=10 , step=2 )
 	# st.write(d)
@@ -56,7 +56,7 @@ if uploaded_file is not None:#check if file is present
 	hpy_single=hp.process(pulse,sample_rate=fs,) [1]['bpm']
 	#st.header("heart rate is {}, {}, {}".format(hrAmean.round(),hrAmed.round(),hrAstd.round()))
 	#st.header('heart rate mean is {}, and range is  {} - {}'.format(np.mean(hpy).round(),np.min(hpy).round(),np.max(hpy).round()))
-	print("hear rate is",hpy_single,np.mean(hpy),hrAmean)
+	print("hear rate is",hpy_single,np.mean(hpy),hrAmean,fourier_analysis(pulse,fs)*60)
 	st.header('heart rate is {}'.format(hpy_single*0.3+np.mean(hpy)*0.4+hrAmean*0.3))
 	fig,ax=plt.subplots(2,1)
 	ax[0].plot(pulse) 
@@ -73,7 +73,7 @@ if uploaded_file is not None:#check if file is present
 	st.image(sample_img)
 
 
-	St.write("Note")
+	st.write("Note")
 st.markdown(	"""
 ### Note
 1. Camera should be right in front of face and capturing the whole face and shoulder as in image shown below
@@ -137,3 +137,7 @@ with col2:
 	width=500)
 with col3:
 	st.write("")
+
+
+st.write("""Image source: Real-Time Webcam Heart-Rate and Variability
+ Estimation with Clean Ground Truth for Evaluation""")
