@@ -25,7 +25,7 @@ def hear_rate(peaklist,fs):
         cnt += 1
     RR_list=np.array(RR_list)
 
-    RR_list=remove_outliers(RR_list)
+    # RR_list=remove_outliers(RR_list)
     bpm = 60000 / np.mean(RR_list) #60000 ms (1 minute) / average R-R interval of signal
     return bpm
     
@@ -53,7 +53,7 @@ def predict_vitals(video_path,model):
     pulse_pred = yptest[0]
     
     pulse_pred = detrend(np.cumsum(pulse_pred), 100)
-    [b_pulse, a_pulse] = butter(3, [0.70 / fs * 2, 2.5 / fs * 2], btype='bandpass')
+    [b_pulse, a_pulse] = butter(1, [0.65 / fs * 2, 2.5 / fs * 2], btype='bandpass')
     pulse_pred = scipy.signal.filtfilt(b_pulse, a_pulse, np.double(pulse_pred))
     resp_pred = yptest[1]
     resp_pred = detrend(np.cumsum(resp_pred), 100)

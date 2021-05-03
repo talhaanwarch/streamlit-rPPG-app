@@ -51,7 +51,7 @@ if uploaded_file is not None:#check if file is present
 	# print(hr)
 	hpy=hp.process_segmentwise(pulse,sample_rate=fs,segment_overlap=0.75,segment_width=15) [1]['bpm']
 	hpy=[x for x in hpy if str(x) != 'nan']
-	hpy=remove_outliers(hpy)
+	#hpy=remove_outliers(hpy)
 
 	hpy_single=hp.process(pulse,sample_rate=fs,) [1]['bpm']
 	#st.header("heart rate is {}, {}, {}".format(hrAmean.round(),hrAmed.round(),hrAstd.round()))

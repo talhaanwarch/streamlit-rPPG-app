@@ -55,7 +55,7 @@ def preprocess_raw_video(videoFilePath, dim=36):
         vidLxL = cv2.resize(roi,(dim,dim))    
         #vidLxL = cv2.resize(img_as_float(img[:, int(width/2)-int(height/2 + 1):int(height/2)+int(width/2), :]), (dim, dim), interpolation = cv2.INTER_AREA)
         vidLxL = cv2.rotate(vidLxL, cv2.ROTATE_90_CLOCKWISE) # rotate 90 degree
-        vidLxL= non_skin_remove(vidLxL)
+        # vidLxL= non_skin_remove(vidLxL)
         vidLxL = cv2.cvtColor(vidLxL, cv2.COLOR_BGR2RGB)
         Xsub[i, :, :, :] = vidLxL/255.0
         success, img = vidObj.read() # read the next one
