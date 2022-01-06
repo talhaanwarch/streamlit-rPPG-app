@@ -1,5 +1,6 @@
 # stream-app
  
+## Measure heart rate via video (rPPG)  
 This app need to be run on a GPU system.
 For this purpose, we will use google colab.
 Steps.
